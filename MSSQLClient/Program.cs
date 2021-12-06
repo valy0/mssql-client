@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Net;
 
 namespace MSSQLClient
 {
@@ -380,17 +381,24 @@ namespace MSSQLClient
 
 		static void Main(string[] args)
 		{
-			Console.WriteLine("Enter db server (Example: dc03.corp1.com):");
+			String hostname = Dns.GetHostName();
+			Console.WriteLine($"Enter db server (Example: dc03.corp1.com | Will use '{hostname}' if no input):");
 			Console.Write("> ");
 			String server = Console.ReadLine();
+			if (server.Replace(" ", "").Replace("\n", "").Length == 0)
+			{
+				server = hostname;
+			}
 
-			Console.WriteLine("Enter database name (Defaults to 'master' if no input):");
+			String defaultDb = "master";
+			Console.WriteLine($"Enter database name (Defaults to '{defaultDb}' if no input):");
 			Console.Write("> ");
 			String database = Console.ReadLine();
 			if (database.Replace(" ", "").Replace("\n", "").Length == 0)
             {
-				database = "master";
-            }
+				database = defaultDb;
+
+			}
 
 			Console.WriteLine("[-] Connecting to db...");
 			String conString = $"Server = {server}; Database = {database}; Integrated Security = True;";
